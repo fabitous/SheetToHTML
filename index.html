@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<title>Upload file</title>
+<head>
+  <script lang="javascript" src="xls.js"></script>
+</head>
+<body>
+
+<h1>Carregando arquivo e dados</h1>
+<input type="file" id="files" name="files[]" multiple />
+<output id="list"></output>
+<p>nome:</p><input type="text" name="nome" id="nome" readonly>
+<p>documento:</p><input type="text" name="documento" id="documento" readonly>
+<output id="result"></output>
+
+<script>
+  function fileSelect(evt) {
+    var files = evt.target.files;
+    try {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var workbook = XLS.read(data, {type: 'binary'});
+        var sheet_name_list = workbook.SheetNames;
+        var cellA1 = workbook.Sheets[sheet_name_list[0]]['A1'].v;
+        var cellA2 = workbook.Sheets[sheet_name_list[0]]['B1'].v;
+        nome.value = cellA1;
+        documento.value = cellA2;
+      };
+      reader.readAsBinaryString(files[0]);
+    }
+    catch(err) {
+      result.innerText = "Formato de arquivo inválido";
+    }
+  }
+  document.getElementById('files').addEventListener('change', fileSelect, false);
+
+</script>
+
+</body>
+</html>
